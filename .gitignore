@@ -2,3 +2,4 @@ log/mosquitto.log
 config/mosquitto.conf
 config/password.txt
 docker-compose.override.yml
+.env

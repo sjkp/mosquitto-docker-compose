@@ -16,12 +16,31 @@ services:
       - target: 1883
         published: 1883
         protocol: tcp
-        mode: host
       - target: 9001
         published: 9001
         protocol: tcp
-        mode: host
+  db:
+    image: postgres:15.3-alpine3.18
+    restart: always
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+    ports:
+      - '5432:5432'
+    volumes: 
+      - db:/var/lib/postgresql/data
+  reader: 
+    image: sjkp/mqtt-reader
+    restart: always
+    environment:
+      - POSTGRES_CONNECTION=${POSTGRES_CONNECTION}
+      - LOCAL_MQTT=mosquitto
+    depends_on:
+      - db
+      - mosquitto
 
 volumes:
   data:
     name: "mqtt-broker-data"
+  db:
+    driver: local
